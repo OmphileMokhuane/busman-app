@@ -6,9 +6,8 @@ import {register} from "@/controller/userController";
 
 export default function RegisterForm() {
     const [formState, formAction] = useActionState(register, {})
-
     return (
-        <div className='min-h-screen w-full flex items-center justify-center bg-gray-50 dark:bg-gray-900 p-4'>
+        <div className='min-h-screen w-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 p-4'>
             <form
                 action={formAction}
                 className='w-full max-w-md space-y-6 p-8 bg-white dark:bg-gray-800 rounded-lg shadow-lg'

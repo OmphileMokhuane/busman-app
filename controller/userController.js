@@ -66,3 +66,58 @@ export const register = async function (pervState, formData) {
     redirect('/')
 }
 
+export const login = async function (prevState, formData) {
+    const failObject = {
+        errors: {
+            username: "Invalid username or password",
+        },
+        success: false,
+    }
+
+    const ourUser = {
+        username: formData.get('username'),
+        password: formData.get('password'),
+    }
+
+    if (typeof ourUser.username !== 'string' || typeof ourUser.password !== 'string') {
+        ourUser.username = ""
+        ourUser.password = ""
+    }
+
+    ourUser.username = ourUser.username.trim()
+    ourUser.password = ourUser.password.trim()
+
+    const userCollection = await getCollection('users')
+    const user = await userCollection.findOne({username: ourUser.username})
+
+    if (!user) return failObject
+
+    if (ourUser.password.length === 0) return failObject
+
+    const matchOrNot = bcrypt.compareSync(ourUser.password, user.password)
+    if (!matchOrNot) return failObject
+
+    // Create JWT token
+    const ourTokenValue = jwt.sign({
+        userId: user._id.toString(),
+        exp: Math.floor(Date.now() / 1000) + (60 * 60),
+    }, process.env.JWT_SECRET)
+
+    // Log the user in by giving them a cookie
+    const cookieStore = await cookies()
+    cookieStore.set('BmanApp', ourTokenValue, {
+        httpOnly: true,
+        sameSite: "strict",
+        maxAge: 60 * 60,
+        secure: true
+    })
+
+    redirect('/')
+}
+
+export const logout = async function () {
+    const cookieStore = await cookies()
+    cookieStore.delete("BmanApp")
+    redirect('/login')
+}
+
