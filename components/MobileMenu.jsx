@@ -69,7 +69,7 @@ export default function MobileMenu({navLinks, user}) {
                                     </form>
                                 ) : (
                                     <Link
-                                        href='/signup'
+                                        href='/'
                                         onClick={closeMenu}
                                         className='block w-full px-4 py-2 text-center text-sm bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-md hover:opacity-90 transition-opacity'
                                     >
